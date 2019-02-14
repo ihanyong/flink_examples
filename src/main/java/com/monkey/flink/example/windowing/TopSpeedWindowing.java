@@ -30,6 +30,8 @@ public class TopSpeedWindowing {
 
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
+
+        env.setParallelism(1);
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         env.getConfig().setGlobalJobParameters(params);
 
