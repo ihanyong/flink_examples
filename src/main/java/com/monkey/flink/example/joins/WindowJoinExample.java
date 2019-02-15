@@ -33,11 +33,11 @@ public class WindowJoinExample {
 
 
         DataStream<Tuple2<String, Integer>> salaryData =
-                env.fromCollection(new ThrottledIterator<>(new SampleData.SalarySource(),20),
+                env.fromCollection(new ThrottledIterator<>(new SampleData.SalarySource(),2),
                         TypeInformation.of(new TypeHint<Tuple2<String, Integer>>() {}));
 
         DataStream<Tuple2<String, Integer>> gradeData =
-                env.fromCollection(new ThrottledIterator<>(new SampleData.GradeSource(),20),
+                env.fromCollection(new ThrottledIterator<>(new SampleData.GradeSource(),3),
                         TypeInformation.of(new TypeHint<Tuple2<String, Integer>>() {}));
 
 
