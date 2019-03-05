@@ -18,12 +18,9 @@ import org.apache.flink.util.Collector;
 public class WordCountStreaming {
     public static void main(String[] args) throws Exception{
         final ParameterTool params = ParameterTool.fromArgs(args);
-
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
+        env.setParallelism(1);
         env.getConfig().setGlobalJobParameters(params);
-
-
         DataStream<String> text;
         if (params.has("input")) {
             text = env.readTextFile(params.get("input"));
@@ -32,10 +29,10 @@ public class WordCountStreaming {
             System.out.println("Use --input to specify file input");
             text = env.fromElements(WordCountData.WORDS);
         }
-
         DataStream<Tuple2<String, Integer>> counts =
                 text.flatMap(new Tokenizer())
                         .keyBy(0)
+//                        .timeWindow(Time.seconds(2))
                         .sum(1);
 
         if (params.has("output")) {
@@ -44,12 +41,7 @@ public class WordCountStreaming {
             System.out.println("Printing result to stdout. Use --output to specify output path");
             counts.print();
         }
-
         env.execute("WordCountStreaming");
 
     }
-
-
-
-
 }

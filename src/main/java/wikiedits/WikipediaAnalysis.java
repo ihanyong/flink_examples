@@ -46,7 +46,7 @@ public class WikipediaAnalysis {
         result.map(Tuple2::toString)
                 .addSink(new FlinkKafkaProducer011<>("192.168.6.21:9092,192.168.6.22:9092,192.168.6.23:9092", "wiki-result", new SimpleStringSchema()));
 
-//        see.execute("test job of wikipedia analysis");
+        see.execute("test job of wikipedia analysis");
         System.out.println(see.getExecutionPlan());
 
     }
