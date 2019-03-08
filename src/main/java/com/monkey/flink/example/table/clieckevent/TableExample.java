@@ -6,6 +6,7 @@ import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.api.java.typeutils.TupleTypeInfo;
 import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
@@ -13,6 +14,7 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
+import org.apache.flink.table.api.java.Tumble;
 import org.apache.flink.table.descriptors.Json;
 import org.apache.flink.table.descriptors.Kafka;
 import org.apache.flink.table.descriptors.Schema;
@@ -34,6 +36,7 @@ public class TableExample {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment streamEnv = StreamExecutionEnvironment.getExecutionEnvironment();
         streamEnv.setParallelism(1);
+        streamEnv.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
 
         StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(streamEnv);
 
@@ -43,16 +46,16 @@ public class TableExample {
 
         Table table = tableEnv.scan("click_event");
         Table result = table
-
-                .groupBy("user")
-                .select("user, count(cTime) as clickCount");
+                .window(Tumble.over("10.second").on("cTime").as("w"))
+                .groupBy("w, user")
+                .select("w.end as windowEnd, user, count(user) as clickCount");
 
         result.insertInto("result");
 
 
-//        streamEnv.execute("stream table example");
+        streamEnv.execute("stream table example");
 
-        System.out.println(streamEnv.getExecutionPlan());
+//        System.out.println(streamEnv.getExecutionPlan());
 
     }
 

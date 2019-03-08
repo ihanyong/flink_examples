@@ -1,5 +1,7 @@
 package com.monkey.flink.example.table.clieckevent;
 
+import java.sql.Timestamp;
+
 /**
  * ClickReport
  *
@@ -7,8 +9,18 @@ package com.monkey.flink.example.table.clieckevent;
  * 2019/3/7
  */
 public class ClickReport {
+    private Timestamp windowEnd;
     private String user;
     private Long clickCount;
+
+
+    public Timestamp getWindowEnd() {
+        return windowEnd;
+    }
+
+    public void setWindowEnd(Timestamp windowEnd) {
+        this.windowEnd = windowEnd;
+    }
 
     public String getUser() {
         return user;
@@ -29,7 +41,8 @@ public class ClickReport {
     @Override
     public String toString() {
         return "ClickReport{" +
-                "user='" + user + '\'' +
+                "windowEnd=" + windowEnd +
+                ", user='" + user + '\'' +
                 ", clickCount=" + clickCount +
                 '}';
     }

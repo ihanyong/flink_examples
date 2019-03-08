@@ -32,12 +32,12 @@ public class ClickEventTableSink implements RetractStreamTableSink<ClickReport> 
 
     @Override
     public String[] getFieldNames() {
-        return new String[]{"user", "clickCount"};
+        return new String[]{"windowEnd","user", "clickCount"};
     }
 
     @Override
     public TypeInformation<?>[] getFieldTypes() {
-        return new TypeInformation[]{Types.STRING, Types.LONG};
+        return new TypeInformation[]{Types.SQL_TIMESTAMP,Types.STRING, Types.LONG};
     }
 
     @Override

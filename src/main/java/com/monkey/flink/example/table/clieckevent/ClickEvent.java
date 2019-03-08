@@ -1,5 +1,7 @@
 package com.monkey.flink.example.table.clieckevent;
 
+import java.sql.Timestamp;
+
 /**
  * ClickEvent
  *
@@ -8,7 +10,7 @@ package com.monkey.flink.example.table.clieckevent;
  */
 public class ClickEvent {
     private String user;
-    private long cTime;
+    private Timestamp cTime;
 
     public String getUser() {
         return user;
@@ -18,11 +20,11 @@ public class ClickEvent {
         this.user = user;
     }
 
-    public long getcTime() {
+    public Timestamp getcTime() {
         return cTime;
     }
 
-    public void setcTime(long cTime) {
+    public void setcTime(Timestamp cTime) {
         this.cTime = cTime;
     }
 }

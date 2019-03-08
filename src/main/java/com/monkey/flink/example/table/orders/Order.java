@@ -1,6 +1,7 @@
 package com.monkey.flink.example.table.orders;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -15,10 +16,10 @@ public class Order implements Serializable, Cloneable {
     private String owner;
     private String shop;
     private double amount;
-    private Date orderTime;
+    private Timestamp orderTime;
 
     public Order() { }
-    public Order(long orderId, String comment, String owner, String shop, double amount, Date orderTime) {
+    public Order(long orderId, String comment, String owner, String shop, double amount, Timestamp orderTime) {
         this.orderId = orderId;
         this.comment = comment;
         this.owner = owner;
@@ -72,11 +73,11 @@ public class Order implements Serializable, Cloneable {
         this.amount = amount;
     }
 
-    public Date getOrderTime() {
+    public Timestamp getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(Date orderTime) {
+    public void setOrderTime(Timestamp orderTime) {
         this.orderTime = orderTime;
     }
 
