@@ -7,6 +7,8 @@ import org.apache.flink.api.java.tuple.Tuple3;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.timestamps.BoundedOutOfOrdernessTimestampExtractor;
+import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
@@ -28,12 +30,12 @@ import java.sql.Timestamp;
  * @author yong.han
  * 2019/3/7
  */
-public class OrderStreamTableExample {
+public class OrderStreamTableExample_with_StreamConvert2Table {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(env);
-        tableEnv.registerTableSource("orders", new OrderTableSourceWithRowtimeAttributes());
+//        tableEnv.registerTableSource("orders", new OrderTableSourceWithRowtimeAttributes());
 
 //        private long orderId;
 //        private String comment;
@@ -41,11 +43,23 @@ public class OrderStreamTableExample {
 //        private String shop;
 //        private double amount;
 //        private Timestamp orderTime;
-//        DataStream<Order> source = env.addSource(new OrderStreamSource());
-//        tableEnv.registerDataStream("orders", source, "orderId,owner, orderTime.rowtime");
+        DataStream<Order> source = env.addSource(new OrderStreamSource());
 
 
-        Table ownerOrderCount = tableEnv.scan("orders")
+//        Table ownerOrderCount = tableEnv.scan("orders")
+        DataStream<Order>  timerDataStream = source.assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<Order>(Time.milliseconds(100)) {
+            @Override
+            public long extractTimestamp(Order element) {
+                return element.getOrderTime().getTime();
+            }
+        });
+
+        tableEnv.registerDataStream("orders", timerDataStream, "orderId,owner, orderTime.rowtime ");
+        Table ordersTable = tableEnv.scan("orders");
+
+//        Table ordersTable = tableEnv.fromDataStream( timerDataStream, "orderId,owner, orderTime.rowtime ");
+
+        Table ownerOrderCount = ordersTable
                 .window(Tumble.over("3.second").on("orderTime").as("w"))
                 .groupBy("w, owner")
                 .select("owner, w.end , orderId.count as count");
@@ -58,6 +72,7 @@ public class OrderStreamTableExample {
 
         env.execute("order table");
 
+//        System.out.println(env.getExecutionPlan());
 
     }
 }

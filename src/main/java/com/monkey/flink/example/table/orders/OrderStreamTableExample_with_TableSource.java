@@ -28,7 +28,7 @@ import java.sql.Timestamp;
  * @author yong.han
  * 2019/3/7
  */
-public class OrderStreamTableExample {
+public class OrderStreamTableExample_with_TableSource {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);

@@ -2,6 +2,7 @@ package com.monkey.flink.example.table.orders;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.streaming.api.watermark.Watermark;
 
 import java.sql.Timestamp;
 import java.util.concurrent.ThreadLocalRandom;
@@ -52,7 +53,11 @@ public class OrderStreamSource extends RichSourceFunction<Order> {
                 }
                 Thread.sleep(10);
 
-                ctx.collectWithTimestamp(order, order.getOrderTime().getTime());
+                ctx.collect(order);
+
+//                ctx.collectWithTimestamp(order, order.getOrderTime().getTime());
+//                ctx.emitWatermark(new Watermark(order.getOrderTime().getTime() - 100));
+
             }
             // 不break, 模拟一个无界流
 //                    break;
