@@ -27,7 +27,7 @@ public class OrderTableSourceWithRowtimeAttributes extends OrderTableSourceWitho
 
     @Override
     public List<RowtimeAttributeDescriptor> getRowtimeAttributeDescriptors() {
-        return Collections.singletonList(new RowtimeAttributeDescriptor("orderTime", new ExistingField("orderTime"), new AscendingTimestamps()));
+        return Collections.singletonList(new RowtimeAttributeDescriptor("t", new ExistingField("orderTime"), new AscendingTimestamps()));
     }
     @Override
     public String explainSource() {

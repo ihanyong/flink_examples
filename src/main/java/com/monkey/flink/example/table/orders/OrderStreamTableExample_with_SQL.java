@@ -42,9 +42,9 @@ public class OrderStreamTableExample_with_SQL {
 //                .select("owner, w.end , orderId.count as count");
 
         Table ownerOrderCount = tableEnv.sqlQuery(
-                "select owner, TUMBLE_END(orderTime, INTERVAL '3' second), count(orderId)" +
+                "select owner, TUMBLE_END(t, INTERVAL '3' second), count(orderId)" +
                 " from orders " +
-                "group by owner, TUMBLE(orderTime, INTERVAL '3' second)");
+                "group by owner, TUMBLE(t, INTERVAL '3' second)");
 
 
         DataStream<Tuple2<Boolean, Tuple3<String, Timestamp, Long>>> countStream = tableEnv.toRetractStream(ownerOrderCount, TypeInformation.of(new TypeHint<Tuple3<String,Timestamp, Long>>() {}));

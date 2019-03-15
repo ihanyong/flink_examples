@@ -50,17 +50,17 @@ public class OrderStreamTableExample_with_StreamConvert2Table {
         DataStream<Order>  timerDataStream = source.assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<Order>(Time.milliseconds(100)) {
             @Override
             public long extractTimestamp(Order element) {
-                return element.getOrderTime().getTime();
+                return element.getOrderTime();
             }
         });
 
-        tableEnv.registerDataStream("orders", timerDataStream, "orderId,owner, orderTime.rowtime ");
+        tableEnv.registerDataStream("orders", timerDataStream, " t.rowtime, orderId,owner ");
         Table ordersTable = tableEnv.scan("orders");
 
 //        Table ordersTable = tableEnv.fromDataStream( timerDataStream, "orderId,owner, orderTime.rowtime ");
 
         Table ownerOrderCount = ordersTable
-                .window(Tumble.over("3.second").on("orderTime").as("w"))
+                .window(Tumble.over("3.second").on("t").as("w"))
                 .groupBy("w, owner")
                 .select("owner, w.end , orderId.count as count");
 

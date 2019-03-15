@@ -33,20 +33,14 @@ public class OrderStreamTableExample_with_TableSource {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         StreamTableEnvironment tableEnv = TableEnvironment.getTableEnvironment(env);
-        tableEnv.registerTableSource("orders", new OrderTableSourceWithRowtimeAttributes());
 
-//        private long orderId;
-//        private String comment;
-//        private String owner;
-//        private String shop;
-//        private double amount;
-//        private Timestamp orderTime;
-//        DataStream<Order> source = env.addSource(new OrderStreamSource());
-//        tableEnv.registerDataStream("orders", source, "orderId,owner, orderTime.rowtime");
+        tableEnv.registerTableSource("orders", new OrderTableSourceWithRowtimeAttributes());
+//        tableEnv.registerTableSource("orders", new OrderTableSourceWithoutRowtimeAttributes());
+
 
 
         Table ownerOrderCount = tableEnv.scan("orders")
-                .window(Tumble.over("3.second").on("orderTime").as("w"))
+                .window(Tumble.over("3.second").on("t").as("w"))
                 .groupBy("w, owner")
                 .select("owner, w.end , orderId.count as count");
 

@@ -2,7 +2,6 @@ package com.monkey.flink.example.table.orders;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * Order
@@ -16,16 +15,28 @@ public class Order implements Serializable, Cloneable {
     private String owner;
     private String shop;
     private double amount;
-    private Timestamp orderTime;
+    private long orderTime;
+
 
     public Order() { }
-    public Order(long orderId, String comment, String owner, String shop, double amount, Timestamp orderTime) {
+    public Order(long orderId, String comment, String owner, String shop, double amount, Long orderTime) {
         this.orderId = orderId;
         this.comment = comment;
         this.owner = owner;
         this.shop = shop;
         this.amount = amount;
-        this.orderTime = orderTime;
+        this.orderTime = null == orderTime ? 0 : orderTime;
+    }
+
+
+    private Timestamp t;
+
+    public Timestamp getT() {
+        return t;
+    }
+
+    public void setT(Timestamp t) {
+        this.t = t;
     }
 
     @Override
@@ -73,11 +84,11 @@ public class Order implements Serializable, Cloneable {
         this.amount = amount;
     }
 
-    public Timestamp getOrderTime() {
+    public long getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(Timestamp orderTime) {
+    public void setOrderTime(long orderTime) {
         this.orderTime = orderTime;
     }
 
