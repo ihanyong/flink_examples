@@ -2,9 +2,8 @@ package com.monkey.flink.example.table.orders;
 
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
+import org.apache.flink.streaming.api.watermark.Watermark;
 
-import java.sql.Timestamp;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * OrderStreamSource
@@ -30,7 +29,7 @@ public class OrderStreamSource extends RichSourceFunction<Order> {
 //    };
     private static final Tuple2[] orders = new Tuple2[]{
             Tuple2.of(0L, new Order(0, "", "owner_1", "shop_1", 300, null))
-            ,Tuple2.of(0L, new Order(0, "", "owner_1", "shop_1", 100, null))
+            ,Tuple2.of(0L, new Order(0, "", "owner_2", "shop_1", 100, null))
 //            ,Tuple2.of(0L, new Order(0, "", "owner_2", "shop_1", 20, null))
     };
 
@@ -39,6 +38,8 @@ public class OrderStreamSource extends RichSourceFunction<Order> {
 
     private boolean running = true;
     private long orderIdOffset = 1;
+    private long updateTime = 0;
+
     @Override
     public void run(SourceContext<Order> ctx) throws Exception {
         while (running) {
@@ -51,12 +52,15 @@ public class OrderStreamSource extends RichSourceFunction<Order> {
 
                 // 引入 延时乱序
 //                order.setOrderTime(new Timestamp(System.currentTimeMillis() - ThreadLocalRandom.current().nextLong(100)));
-                order.setOrderTime(System.currentTimeMillis() - delay);
-
-                Thread.sleep(10);
+//                order.setOrderTime(System.currentTimeMillis() - delay);
+                order.setOrderTime(updateTime);
 
                 ctx.collect(order);
+                ctx.emitWatermark(new Watermark(order.getOrderTime()));
 
+                System.out.println("======" + order);
+                updateTime += 2000;
+                Thread.sleep(2000);
 //                ctx.collectWithTimestamp(order, order.getOrderTime().getTime());
 //                ctx.emitWatermark(new Watermark(order.getOrderTime().getTime() - 100));
 

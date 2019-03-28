@@ -1,21 +1,12 @@
 package com.monkey.flink.example.table.orders;
 
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.source.RichSourceFunction;
-import org.apache.flink.table.api.TableSchema;
 import org.apache.flink.table.sources.*;
 import org.apache.flink.table.sources.tsextractors.ExistingField;
 import org.apache.flink.table.sources.wmstrategies.AscendingTimestamps;
+import org.apache.flink.table.sources.wmstrategies.PreserveWatermarks;
 
-import java.sql.Timestamp;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * OrderTableSourceWithRowtimeAttributes
@@ -27,7 +18,7 @@ public class OrderTableSourceWithRowtimeAttributes extends OrderTableSourceWitho
 
     @Override
     public List<RowtimeAttributeDescriptor> getRowtimeAttributeDescriptors() {
-        return Collections.singletonList(new RowtimeAttributeDescriptor("t", new ExistingField("orderTime"), new AscendingTimestamps()));
+        return Collections.singletonList(new RowtimeAttributeDescriptor("t", new ExistingField("orderTime"), new PreserveWatermarks()));
     }
     @Override
     public String explainSource() {
