@@ -15,29 +15,30 @@ public class Order implements Serializable, Cloneable {
     private String owner;
     private String shop;
     private double amount;
-    private long orderTime;
+    private Timestamp orderTime;
+
+//    private Timestamp t;
 
 
     public Order() { }
-    public Order(long orderId, String comment, String owner, String shop, double amount, Long orderTime) {
+    public Order(long orderId, String comment, String owner, String shop, double amount, Timestamp orderTime) {
         this.orderId = orderId;
         this.comment = comment;
         this.owner = owner;
         this.shop = shop;
         this.amount = amount;
-        this.orderTime = null == orderTime ? 0 : orderTime;
+        this.orderTime = null == orderTime ? new Timestamp(0) : orderTime;
     }
 
 
-    private Timestamp t;
 
-    public Timestamp getT() {
-        return t;
-    }
-
-    public void setT(Timestamp t) {
-        this.t = t;
-    }
+//    public Timestamp getT() {
+//        return t;
+//    }
+//
+//    public void setT(Timestamp t) {
+//        this.t = t;
+//    }
 
     @Override
     protected Order clone()  {
@@ -84,11 +85,11 @@ public class Order implements Serializable, Cloneable {
         this.amount = amount;
     }
 
-    public long getOrderTime() {
+    public Timestamp getOrderTime() {
         return orderTime;
     }
 
-    public void setOrderTime(long orderTime) {
+    public void setOrderTime(Timestamp orderTime) {
         this.orderTime = orderTime;
     }
 

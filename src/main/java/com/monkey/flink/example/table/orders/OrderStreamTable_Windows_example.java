@@ -58,7 +58,7 @@ public class OrderStreamTable_Windows_example {
         DataStream<Order> orderDataStream = env.addSource(new OrderStreamSource()).assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<Order>(Time.milliseconds(100)) {
             @Override
             public long extractTimestamp(Order element) {
-                return element.getOrderTime();
+                return element.getOrderTime().getTime();
             }
         });
 

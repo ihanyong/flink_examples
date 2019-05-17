@@ -50,7 +50,7 @@ public class OrderStreamTableExample_with_StreamConvert2Table {
         DataStream<Order>  timerDataStream = source.assignTimestampsAndWatermarks(new BoundedOutOfOrdernessTimestampExtractor<Order>(Time.milliseconds(100)) {
             @Override
             public long extractTimestamp(Order element) {
-                return element.getOrderTime();
+                return element.getOrderTime().getTime();
             }
         });
 
